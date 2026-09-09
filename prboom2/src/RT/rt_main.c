@@ -418,7 +418,7 @@ void RT_EndFrame()
 
   RgDrawFrameRenderResolutionParams resolution_params =
   {
-    .upscaleTechnique = rt_settings.dlss > 0 ? RG_RENDER_UPSCALE_TECHNIQUE_NVIDIA_DLSS : rt_settings.fsr > 0 ? RG_RENDER_UPSCALE_TECHNIQUE_AMD_FSR : RG_RENDER_UPSCALE_TECHNIQUE_NEAREST,
+    .upscaleTechnique = rt_settings.dlss > 0 ? RG_RENDER_UPSCALE_TECHNIQUE_NVIDIA_DLSS : RG_RENDER_UPSCALE_TECHNIQUE_NEAREST,
     .sharpenTechnique = RG_RENDER_SHARPEN_TECHNIQUE_NONE,
     .resolutionMode = GetResolutionMode(rt_settings.dlss, rt_settings.fsr),
     .renderSize = render_size,
