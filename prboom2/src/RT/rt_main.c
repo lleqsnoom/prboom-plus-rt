@@ -277,16 +277,23 @@ static RgRenderResolutionMode GetResolutionMode(int dlss, int fsr) // 0 - off, 1
     default:  break;
   }
 
+  // with FSR, the internal render size is fixed by rt_renderscale (scaled by
+  // GetFsrStretchFactor), so the RT cost stays constant in fullscreen
+  return RG_RENDER_RESOLUTION_MODE_CUSTOM;
+}
+
+
+// FSR render size relative to rt_renderscale, from highest to lowest quality
+static float GetFsrStretchFactor(int fsr)
+{
   switch (fsr)
   {
-    case 1:   return RG_RENDER_RESOLUTION_MODE_ULTRA_QUALITY;
-    case 2:   return RG_RENDER_RESOLUTION_MODE_QUALITY;
-    case 3:   return RG_RENDER_RESOLUTION_MODE_BALANCED;
-    case 4:   return RG_RENDER_RESOLUTION_MODE_PERFORMANCE;
-    default:  break;
+    case 1:   return 0.77f;
+    case 2:   return 0.67f;
+    case 3:   return 0.59f;
+    case 4:   return 0.50f;
+    default:  return 1.0f;
   }
-
-  return RG_RENDER_RESOLUTION_MODE_CUSTOM;
 }
 
 
@@ -400,12 +407,21 @@ void RT_EndFrame()
   RT_AddSkyDome();
 
 
+  RgExtent2D render_size = GetScaledResolution(rt_settings.renderscale);
+
+  if (rt_settings.fsr > 0 && rt_settings.dlss == 0)
+  {
+    const float fsr_factor = GetFsrStretchFactor(rt_settings.fsr);
+    render_size.width = (int)(render_size.width * fsr_factor);
+    render_size.height = (int)(render_size.height * fsr_factor);
+  }
+
   RgDrawFrameRenderResolutionParams resolution_params =
   {
     .upscaleTechnique = rt_settings.dlss > 0 ? RG_RENDER_UPSCALE_TECHNIQUE_NVIDIA_DLSS : rt_settings.fsr > 0 ? RG_RENDER_UPSCALE_TECHNIQUE_AMD_FSR : RG_RENDER_UPSCALE_TECHNIQUE_NEAREST,
     .sharpenTechnique = RG_RENDER_SHARPEN_TECHNIQUE_NONE,
     .resolutionMode = GetResolutionMode(rt_settings.dlss, rt_settings.fsr),
-    .renderSize = GetScaledResolution(rt_settings.renderscale),
+    .renderSize = render_size,
     .interlacing = rt_settings.crt_interlacing
   };
 
