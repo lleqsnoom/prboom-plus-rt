@@ -1598,7 +1598,7 @@ static void UpdateFocus(void)
   if(sdl_window)
   {
     flags = SDL_GetWindowFlags(sdl_window);
-    if ((flags & SDL_WINDOW_SHOWN) && !(flags & SDL_WINDOW_MINIMIZED) && (flags & SDL_WINDOW_INPUT_FOCUS))
+    if ((flags & SDL_WINDOW_SHOWN) && !(flags & SDL_WINDOW_MINIMIZED))
     {
       window_focused = true;
     }
