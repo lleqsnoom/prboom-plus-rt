@@ -171,8 +171,14 @@ static void AddFlat(const int sectornum, dboolean ceiling, const visplane_t *pla
     float w;
     RgFloat3D c;
 
-    if (RT_GetSectorLightLevelWeight(sectornum, &w, &c))
+    if (RT_GetSectorLightLevelWeight(sectornum, &w, &c) || !RT_HasSectorLightingData())
     {
+      if (!RT_HasSectorLightingData())
+      {
+        w = 1.0f;
+        c.data[0] = c.data[1] = c.data[2] = 1.0f;
+      }
+
       RgFloat3D center = { 0 };
 
       for (int j = 0; j < sector_geometry.vertex_count; j++)

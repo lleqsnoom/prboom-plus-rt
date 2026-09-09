@@ -331,6 +331,12 @@ dboolean RT_GetSectorLightLevelWeight(int sectornum, float *out_weight, RgFloat3
 }
 
 
+dboolean RT_HasSectorLightingData(void)
+{
+  return GetMapMetaInfo(gameepisode, gamemap) != NULL;
+}
+
+
 void RT_MapMetaInfo_AddDelta(float deltaweight, int deltared, int deltagreen, int deltablue)
 {
   rt_map_metainfo_t *mp = GetMapMetaInfo(gameepisode, gamemap);

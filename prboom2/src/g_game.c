@@ -788,16 +788,8 @@ void G_BuildTiccmd(ticcmd_t* cmd)
     upmove -= flyspeed[speed];
 
   // RT: variable like upmove, which is also not recorded to cmd
-  if (gamekeydown[key_rt_flashlight] && rt_flashlight_ready)
-  {
-    rt_flashlight = !rt_flashlight;
-    rt_flashlight_ready = false;
-  }
-  // RT: if key is finally released, flashlight key is ready
-  if (!gamekeydown[key_rt_flashlight] && !rt_flashlight_ready)
-  {
-    rt_flashlight_ready = true;
-  }
+  rt_flashlight = 0;
+  rt_flashlight_ready = false;
 
   // CPhipps - special events (game new/load/save/pause)
   if (special_event & BT_SPECIAL) {
@@ -2811,21 +2803,6 @@ void G_DoNewGame (void)
   //jff 4/26/98 wake up the status bar in case were coming out of a DM demo
   ST_Start();
   walkcamera.type=0; //e6y
-
-#if RT_CUSTOM_MENU
-  if (V_GetMode() == VID_MODERT)
-  {
-    const char *hint_text = RT_GetFlashlightHintString(key_rt_flashlight);
-
-    const int ticks_startdelay = TICRATE * 3;
-    const int ticks = TICRATE;
-
-    for (int i = 0; i < 6; i++)
-    {
-      SetCustomMessage(consoleplayer, hint_text, ticks_startdelay + ticks * i, ticks + 1, i % 2 ? CR_WHITE : CR_ORANGE, i == 0 || i == 2 ? sfx_tink : sfx_None);
-    }
-  }
-#endif
 }
 
 // killough 4/10/98: New function to fix bug which caused Doom

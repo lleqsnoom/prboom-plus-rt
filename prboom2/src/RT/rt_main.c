@@ -108,7 +108,7 @@ void RT_Init()
     .rasterizedSkyCubemapSize = 256,
 
     .maxTextureCount = RG_MAX_TEXTURE_COUNT,
-    .textureSamplerForceMinificationFilterLinear = true,
+    .textureSamplerForceMinificationFilterLinear = false,
 
     .pOverridenTexturesFolderPath = RG_RESOURCES_FOLDER "mat/",
     .overridenAlbedoAlphaTextureIsSRGB = true,
