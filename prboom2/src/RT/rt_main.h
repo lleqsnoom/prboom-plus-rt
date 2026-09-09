@@ -82,6 +82,7 @@ void RT_InitMatrices(const float viewMatrix[16], const float projMatrix[16]);
 void RT_ProcessPlayer(const player_t *player);
 
 double RT_GetCurrentTime(void);
+dboolean RT_IsClassicHUDEnabled(void);
 
 void RT_AddPlane(int subsectornum, visplane_t *floor, visplane_t *ceiling);
 void RT_AddWall(int subsectornum, seg_t *seg);
@@ -127,6 +128,7 @@ void RT_MapMetaInfo_Init(int mission);
 void RT_MapMetaInfo_AddDelta(float deltaweight, int deltared, int deltagreen, int deltablue);
 void RT_MapMetaInfo_WriteToFile(void);
 dboolean RT_GetSectorLightLevelWeight(int sectornum, float *out_weight, RgFloat3D *out_color);
+dboolean RT_HasSectorLightingData(void);
 
 
 uint64_t RT_GetUniqueID_FirstPersonWeapon(int weaponindex);
