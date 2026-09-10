@@ -146,6 +146,9 @@ patchnum_t hu_fontk[HU_FONTSIZE];//jff 3/7/98 added for graphic key indicators
 patchnum_t hu_msgbg[9];          //jff 2/26/98 add patches for message background
 patchnum_t hu_font_hud[HU_FONTSIZE];
 
+// Renderer FPS, updated by R_ShowStats()
+extern int renderer_fps;
+
 // widgets
 static hu_textline_t  w_title;
 static hu_stext_t     w_message;
@@ -154,6 +157,7 @@ static hu_itext_t     w_inputbuffer[MAXPLAYERS];
 static hu_textline_t  w_coordx; //jff 2/16/98 new coord widget for automap
 static hu_textline_t  w_coordy; //jff 3/3/98 split coord widgets automap
 static hu_textline_t  w_coordz; //jff 3/3/98 split coord widgets automap
+static hu_textline_t  w_fps;    // FPS counter, top-right
 static hu_textline_t  w_ammo;   //jff 2/16/98 new ammo widget for hud
 static hu_textline_t  w_health; //jff 2/16/98 new health widget for hud
 static hu_textline_t  w_armor;  //jff 2/16/98 new armor widget for hud
@@ -493,6 +497,17 @@ void HU_Start(void)
     HU_FONTSTART,
     hudcolor_titl,
     VPT_ALIGN_LEFT_BOTTOM
+  );
+
+  // FPS counter, top-right corner
+  HUlib_initTextLine
+  (
+    &w_fps,
+    0, 1,
+    hu_font,
+    HU_FONTSTART,
+    CR_GREEN,
+    VPT_ALIGN_RIGHT_TOP
   );
 
   // create the hud health widget
@@ -2683,6 +2698,29 @@ void HU_Drawer(void)
 
   // display the interactive buffer for chat entry
   HUlib_drawIText(&w_chat);
+
+  // FPS counter, top-right corner
+  {
+    char fpsstr[16];
+    int  i, w = 0;
+
+    sprintf(fpsstr, "FPS: %d", renderer_fps);
+
+    HUlib_clearTextLine(&w_fps);
+    for (i = 0; fpsstr[i]; i++)
+      HUlib_addCharToTextLine(&w_fps, fpsstr[i]);
+
+    for (i = 0; fpsstr[i]; i++)
+    {
+      unsigned char c = (unsigned char)toupper((unsigned char)fpsstr[i]);
+      w += (c == ' ' || c < HU_FONTSTART || c > 127) ? 4 : hu_font[c - HU_FONTSTART].width;
+    }
+
+    w_fps.x = 320 - w - 2;
+    w_fps.y = HU_COORDXYZ_Y;
+    w_fps.w = 0;
+    HUlib_drawTextLine(&w_fps, false);
+  }
 }
 
 //
