@@ -268,6 +268,32 @@ gamestate_t    wipegamestate = GS_DEMOSCREEN;
 extern dboolean setsizeneeded;
 extern int     showMessages;
 
+static void D_FrameLimit(void)
+{
+  static unsigned long long next_frame_us = 0;
+  unsigned long long now_us;
+  unsigned long long step_us;
+  long long wait_us;
+
+  if (cap_fps <= 0)
+    return;
+
+  now_us = (unsigned long long)SDL_GetTicks() * 1000;
+  step_us = 1000000 / (unsigned long long)cap_fps;
+
+  if (next_frame_us == 0)
+    next_frame_us = now_us;
+
+  wait_us = (long long)next_frame_us - (long long)now_us;
+  if (wait_us > 0 && wait_us < (long long)step_us * 2)
+    I_uSleep((unsigned long)wait_us);
+
+  next_frame_us += step_us;
+
+  if (next_frame_us < now_us || next_frame_us > now_us + step_us * 2)
+    next_frame_us = now_us + step_us;
+}
+
 void D_Display (fixed_t frac)
 {
   static dboolean isborderstate        = false;
@@ -304,6 +330,9 @@ void D_Display (fixed_t frac)
 
   if (!I_StartDisplay())
     return;
+
+  if (movement_smooth && !capturing_video && !doSkip)
+    D_FrameLimit();
 
   if (V_GetMode() == VID_MODERT)
   {
